@@ -1,0 +1,28 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Monda', sans-serif;
+}
+
+h1 {
+  font-size: 4em;
+  margin-bottom: 0.5em;
+}
+
+nav {
+  display: flex;
+}
+
+a {
+  cursor: pointer;
+  padding: 0.5em 3em;
+  border-radius: var(--bss-border-curve);
+  background: var(--bss-bg-dark);
+  color: var(--bss-cl-light);
+}
+
+a:hover {
+  color: white;
+}
