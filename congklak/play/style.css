@@ -16,7 +16,8 @@ h1 {
 }
 
 section {
-  margin: auto;
+  display: flex;
+  margin: 3em auto 1em;
 }
 
 main {
@@ -33,7 +34,12 @@ aside {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 3em;
+  justify-content: center;
+  margin-right: 3em;
+}
+aside h2 {
+  writing-mode: vertical-lr;
+  display: flex;
 }
 
 .ring {
@@ -46,6 +52,7 @@ aside {
   background: #e7e7e7;
 }
 .ring .score {
+  writing-mode: vertical-lr;
   font-size: 3em;
 }
 .ring.home {
@@ -66,39 +73,66 @@ aside {
 .play-area .side:first-child {
   margin-right: 1.5em;
 }
-.play-area .side div:not(:first-child) {
+.play-area .side .ring:not(:first-child) {
   margin-top: 1em;
 }
 
 @media only screen and (min-width: 768px) {
+  aside h2,
+  .ring .score {
+    writing-mode: unset;
+  }
+  section {
+    flex-direction: column-reverse;
+    margin: auto;
+  }
+
+  aside {
+    margin: 3em 0 0;
+  }
+
   main {
     flex-direction: row;
+    padding: 1em 0.75em;
   }
 
   .play-area {
     flex-direction: column;
-    padding: 0 1em;
+    padding: 0;
   }
   .play-area .side {
     flex-direction: row;
   }
   .play-area .side:first-child {
     margin-right: unset;
-    margin-bottom: 1.5em;
+    margin-bottom: 0.5em;
   }
-  .play-area .side div:not(:first-child) {
+  .play-area .side .ring:not(:first-child) {
     margin-top: unset;
-    margin-left: 1em;
+    margin-left: 0.5em;
   }
 }
 
 @media only screen and (min-width: 1024px) {
+  main {
+    padding: 1em 1.75em;
+  }
+  .play-area {
+    padding: 0 0.5em;
+  }
+  .play-area .side:first-child {
+    margin-bottom: 0.75em;
+  }
+  .play-area .side .ring:not(:first-child) {
+    margin-left: 0.75em;
+  }
+
   .ring {
-    width: 7.5em;
-    height: 7.5em;
+    width: 5.75em;
+    height: 5.75em;
   }
   .ring.home {
-    width: 9em;
-    height: 9em;
+    width: 7.25em;
+    height: 7.25em;
   }
 }
