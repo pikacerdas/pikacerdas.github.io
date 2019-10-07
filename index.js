@@ -1,1 +1,1 @@
-const congklak = require('../conglak/src/index')
+const congklak = require('congklak')

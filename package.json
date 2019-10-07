@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/pikacerdas/pikacerdas.github.io#readme",
   "dependencies": {
+    "congklak": "git+https://github.com/pikacerdas/congklak.git",
     "rollup": "^1.23.1"
   }
 }
