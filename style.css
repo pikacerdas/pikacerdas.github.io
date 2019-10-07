@@ -17,9 +17,9 @@ nav {
 a {
   cursor: pointer;
   padding: 0.5em 3em;
-  border-radius: var(--bss-border-curve);
+  border-radius: var(--aqua-border-curve);
   margin-top: 0.5em;
-  background: var(--bss-bg-dark);
+  background: var(--aqua-bg-dark);
   color: white;
 }
 
