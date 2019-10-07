@@ -72,6 +72,9 @@ aside h2 {
   writing-mode: vertical-lr;
   font-size: 3em;
 }
+.ring .seed {
+  font-size: 2em;
+}
 .ring.home {
   width: 6em;
   height: 6em;
