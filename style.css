@@ -14,7 +14,7 @@ nav {
   display: flex;
 }
 
-a {
+.button {
   cursor: pointer;
   padding: 0.5em 3em;
   border-radius: var(--aqua-border-curve);
@@ -23,7 +23,7 @@ a {
   color: white;
 }
 
-a:hover {
+.button:hover {
   color: white;
 }
 
