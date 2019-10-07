@@ -44,3 +44,13 @@ a:hover {
   width: auto;
   margin-right: 1em;
 }
+
+.button-wrapper {
+  width: auto;
+  text-align: center;
+}
+
+.button-inner {
+  margin: 2em 1em;
+  display: inline-block;
+}
