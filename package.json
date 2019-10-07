@@ -4,8 +4,9 @@
   "description": "PikaCerdas Website",
   "main": "index.js",
   "scripts": {
-    "build": "node build.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "browserify index.js -o congklak/play/congklak.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "watchify index.js -o congklak/play/congklak.js -v"
   },
   "repository": {
     "type": "git",
@@ -18,7 +19,8 @@
   },
   "homepage": "https://github.com/pikacerdas/pikacerdas.github.io#readme",
   "dependencies": {
+    "browserify": "^16.5.0",
     "congklak": "git+https://github.com/pikacerdas/congklak.git",
-    "rollup": "^1.23.1"
+    "watchify": "^3.11.1"
   }
 }
