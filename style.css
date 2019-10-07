@@ -8,7 +8,6 @@ body {
 
 h1 {
   font-size: 4em;
-  margin-bottom: 0.5em;
 }
 
 nav {
@@ -19,10 +18,29 @@ a {
   cursor: pointer;
   padding: 0.5em 3em;
   border-radius: var(--bss-border-curve);
+  margin-top: 0.5em;
   background: var(--bss-bg-dark);
-  color: var(--bss-cl-light);
+  color: white;
 }
 
 a:hover {
   color: white;
+}
+
+.selection {
+  max-width: 24em;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 2em 0;
+}
+.selection label {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.selection label input {
+  width: auto;
+  margin-right: 1em;
 }
