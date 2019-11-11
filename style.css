@@ -59,3 +59,9 @@ nav {
 .side.our > .ring:not(.home) {
   cursor: pointer;
 }
+
+div.play-area .side.our > .ring:not(.home):hover {
+  background-color: darkgreen !important;
+  color: white !important;
+  transition: 200ms;
+}
