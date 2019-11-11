@@ -55,3 +55,7 @@ nav {
 .button-inner:not(:first-child) {
   margin-top: 0.5em;
 }
+
+.side.our > .ring:not(.home) {
+  cursor: pointer;
+}
