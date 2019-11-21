@@ -4,6 +4,7 @@
   "description": "PikaCerdas Website",
   "main": "index.js",
   "scripts": {
+    "start": "serve .",
     "build": "browserify index.js -o congklak/play/congklak.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "watchify index.js -o congklak/play/congklak.js -v"
@@ -22,5 +23,8 @@
     "browserify": "^16.5.0",
     "congklak": "git+https://github.com/pikacerdas/congklak.git",
     "watchify": "^3.11.1"
+  },
+  "devDependencies": {
+    "serve": "^11.2.0"
   }
 }
