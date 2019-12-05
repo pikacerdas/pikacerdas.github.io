@@ -60,13 +60,17 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.init = init;
+exports.checkWinner = checkWinner;
 exports.moveUntilEnd = moveUntilEnd;
 exports.aiPlay = aiPlay;
 exports.play = play;
 const PLAYER = exports.PLAYER = 0;
 const PLAYER_MOVING = exports.PLAYER_MOVING = 1;
+const PLAYER_WIN = exports.PLAYER_WIN = 4;
 const AI = exports.AI = 2;
 const AI_MOVING = exports.AI_MOVING = 3;
+const AI_WIN = exports.AI_WIN = 5;
+const TIE = exports.TIE = 6;
 
 const MAX_HOUSE = 16;
 const PLAYER_POINT_INDEX = 7;
@@ -85,10 +89,6 @@ function swapState(state) {
   return [...state.slice(8, 16), ...state.slice(0, 8)];
 }
 
-function swapPoint({ holeIndex, playerPoint, enemyPoint }) {
-  return { holeIndex, playerPoint: enemyPoint, enemyPoint: playerPoint };
-}
-
 function init(firstTurn = true) {
   houses = [];
   for (let i = 0; i < MAX_HOUSE; i += 1) {
@@ -102,6 +102,22 @@ const getState = exports.getState = () => houses.slice();
 const switchTurn = () => {
   turn = turn === PLAYER || turn === PLAYER_MOVING ? AI : PLAYER;
 };
+
+function checkWinner(currentState) {
+  const allSeeds = (MAX_HOUSE - 2) * SEED_PER_HOUSE;
+  const allSeedsExceptPoint = allSeeds - currentState[PLAYER_POINT_INDEX] - currentState[ENEMY_POINT_INDEX];
+  if (Math.abs(currentState[PLAYER_POINT_INDEX] - currentState[ENEMY_POINT_INDEX]) > allSeedsExceptPoint) {
+    if (currentState[PLAYER_POINT_INDEX] > currentState[ENEMY_POINT_INDEX]) {
+      return PLAYER_WIN;
+    }
+    return AI_WIN;
+  }
+  if (allSeedsExceptPoint === 0 && currentState[PLAYER_POINT_INDEX] === currentState[ENEMY_POINT_INDEX]) {
+    return TIE;
+  }
+  return -1;
+}
+
 function* move(state, grabHouse, realMove = false, swap = false) {
   const currentState = state.slice();
   let oneRound = false;
@@ -110,7 +126,7 @@ function* move(state, grabHouse, realMove = false, swap = false) {
   let grabSeed = currentState[grabHouse];
   currentState[grabHouse] = 0;
 
-  yield currentState;
+  yield { state: currentState, seed: grabSeed };
 
   while (grabSeed > 0) {
     if (currentPos === ENEMY_POINT_INDEX) {
@@ -128,7 +144,7 @@ function* move(state, grabHouse, realMove = false, swap = false) {
     }
 
     currentPos = (currentPos + 1) % MAX_HOUSE;
-    yield currentState;
+    yield { state: currentState, seed: grabSeed };
   }
 
   currentPos -= 1;
@@ -139,6 +155,7 @@ function* move(state, grabHouse, realMove = false, swap = false) {
   }
 
   if (realMove) {
+    checkWinner(currentState);
     switchTurn();
     houses = swap ? swapState(currentState) : currentState;
   }
@@ -157,28 +174,31 @@ function moveUntilEnd(state, grabHouse) {
   return result;
 }
 
-function bestMove(state, depth) {
+function bestMove(state, depth, diffBefore) {
   let holeIndex;
   let playerPoint = -INF;
   let enemyPoint = INF;
+  let diff = -INF;
 
   for (let i = 0; i < PLAYER_POINT_INDEX; i += 1) {
     if (depth === 0) {
       const newState = moveUntilEnd(state, i);
-      if (newState[PLAYER_POINT_INDEX] > playerPoint) {
+      if (newState[PLAYER_POINT_INDEX] - newState[ENEMY_POINT_INDEX] > diff) {
         holeIndex = i;
         playerPoint = newState[PLAYER_POINT_INDEX];
         enemyPoint = newState[ENEMY_POINT_INDEX];
       }
     } else {
       const nextState = swapState(moveUntilEnd(state, i));
-      const temp = swapPoint(bestMove(nextState, depth - 1));
-      if (temp.playerPoint > playerPoint) {
+      const temp = bestMove(nextState, depth - 1, diff);
+      if (temp.enemyPoint - temp.playerPoint > diff) {
         holeIndex = i;
-        playerPoint = temp.playerPoint;
-        enemyPoint = temp.enemyPoint;
+        playerPoint = temp.enemyPoint;
+        enemyPoint = temp.playerPoint;
       }
     }
+    diff = playerPoint - enemyPoint;
+    if (-diff < diffBefore) break;
   }
 
   return { holeIndex, playerPoint, enemyPoint };
@@ -188,10 +208,10 @@ function* aiPlay() {
   turn = AI_MOVING;
 
   const swappedState = swapState(houses);
-  const index = bestMove(swappedState, 3).holeIndex;
+  const index = bestMove(swappedState, 3, -INF).holeIndex;
   const stateStream = move(swappedState, index, true, true);
   for (let tmp = stateStream.next().value; tmp !== undefined; tmp = stateStream.next().value) {
-    yield swapState(tmp);
+    yield swapState(tmp.state);
   }
 }
 

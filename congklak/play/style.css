@@ -80,6 +80,30 @@ aside h2 {
   height: 6em;
 }
 
+.button-wrapper {
+  margin: 3em;
+}
+
+.button-inner {
+  margin: 1em;
+}
+
+#end {
+  display: none;
+}
+
+#win {
+  display: none;
+}
+
+#lose {
+  display: none;
+}
+
+#tie {
+  display: none;
+}
+
 @media only screen and (min-width: 768px) {
   aside h2,
   .ring .score {
