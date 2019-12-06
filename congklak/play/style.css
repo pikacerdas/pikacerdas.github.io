@@ -29,7 +29,7 @@ section {
   position: absolute;
   left: 60%;
   color: white;
-  transform: translate(-60%, 60%);
+  transform: translate(-60%, 50%);
 }
 
 main {
@@ -64,7 +64,7 @@ aside h2 {
   justify-content: center;
 }
 .play-area .side:first-child {
-  margin-right: 0.5em;
+  margin-left: 0.5em;
 }
 .play-area .side .ring:not(:first-child) {
   margin-top: 0.5em;
@@ -154,6 +154,9 @@ aside h2 {
 
   #seed {
     transform: rotate(0);
+  }
+  #seed span {
+    transform: translate(-60%, 80%);
   }
 }
 
