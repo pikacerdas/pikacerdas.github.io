@@ -167,7 +167,7 @@ function* move(state, grabHouse, realMove = false, swap = false) {
     houses = swap ? swapState(currentState) : currentState;
   }
 
-  return currentState;
+  return { state: currentState, seed: grabSeed };
 }
 
 function moveUntilEnd(state, grabHouse) {
@@ -178,7 +178,7 @@ function moveUntilEnd(state, grabHouse) {
     result = tmp;
   }
 
-  return result;
+  return result.state;
 }
 
 function bestMove(state, depth, diffBefore) {
