@@ -23,12 +23,13 @@ section {
 #seed {
   position: relative;
   background: none;
+  transform: rotate(90deg);
 }
 #seed span {
   position: absolute;
   left: 60%;
   color: white;
-  transform: translate(-60%, 80%);
+  transform: translate(-60%, 60%);
 }
 
 main {
@@ -54,7 +55,7 @@ aside h2 {
 
 .play-area {
   display: flex;
-  flex-direction: row;
+  flex-direction: row-reverse;
   padding: 0.5em 0;
 }
 .play-area .side {
@@ -83,6 +84,7 @@ aside h2 {
   font-size: 3em;
 }
 .ring .seed {
+  writing-mode: vertical-lr;
   font-size: 2em;
 }
 .ring.home {
@@ -116,7 +118,8 @@ aside h2 {
 
 @media only screen and (min-width: 768px) {
   aside h2,
-  .ring .score {
+  .ring .score,
+  .ring .seed {
     writing-mode: unset;
   }
   section {
@@ -147,6 +150,10 @@ aside h2 {
   .play-area .side .ring:not(:first-child) {
     margin-top: unset;
     margin-left: 0.5em;
+  }
+
+  #seed {
+    transform: rotate(0);
   }
 }
 
