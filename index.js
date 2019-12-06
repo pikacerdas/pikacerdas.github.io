@@ -26,14 +26,17 @@ const coloringTheChanges = newState => {
     const ring = document.querySelector(`#outer-ring-${i}`);
     ring.style.backgroundColor = '#e7e7e7';
     if (prevState[i] !== newState[i]) {
-      if (congklak.getTurn() === congklak.AI_MOVING)
+      if (congklak.getTurn() === congklak.AI_MOVING) {
         ring.style.backgroundColor = '#ff9494';
-      if (congklak.getTurn() === congklak.PLAYER_MOVING)
+      }
+      if (congklak.getTurn() === congklak.PLAYER_MOVING) {
         ring.style.backgroundColor = '#c1ffb0';
+      }
     }
   }
 };
 
+const seedDiv = document.querySelector('#seed span');
 setInterval(() => {
   if (congklak.getTurn() === congklak.AI) {
     document.querySelector('.description').innerHTML = "It's enemy's turn";
@@ -48,10 +51,10 @@ setInterval(() => {
   if (tmp) {
     const { state, seed } = tmp;
     if (seed !== undefined) {
-      document.querySelector('.grab').innerHTML = 'Seed: ' + seed;
+      seedDiv.innerHTML = seed;
     }
     render(state);
     coloringTheChanges(state);
     prevState = state.slice();
   }
-}, 333);
+}, 500);
