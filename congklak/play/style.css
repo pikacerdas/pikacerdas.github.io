@@ -44,7 +44,7 @@ main {
 aside {
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   margin-right: 3em;
 }
 aside h2 {
@@ -125,7 +125,7 @@ aside h2 {
   }
 
   aside {
-    margin: 3em 0 0;
+    margin: 3em 3em 0;
   }
 
   main {
