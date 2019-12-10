@@ -80,7 +80,7 @@ setInterval(() => {
     coloringTheChanges(state);
     prevState = state.slice();
   }
-}, 150);
+}, 500);
 
 },{"congklak":2}],2:[function(require,module,exports){
 "use strict";
