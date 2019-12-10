@@ -38,7 +38,29 @@ const coloringTheChanges = newState => {
 };
 
 const seedDiv = document.querySelector('#seed span');
+
+const gameOver = status => {
+  document.querySelector('#game').style.display = 'none';
+  document.querySelector('#end').style.display = 'initial';
+  document.querySelector('#' + status).style.display = 'initial';
+};
+
+const checkGameOver = () => {
+  if (congklak.getTurn() === congklak.AI_WIN) {
+    gameOver('lose');
+  }
+
+  if (congklak.getTurn() === congklak.PLAYER_WIN) {
+    gameOver('win');
+  }
+
+  if (congklak.getTurn() === congklak.TIE) {
+    gameOver('tie');
+  }
+};
+
 setInterval(() => {
+  checkGameOver();
   if (congklak.getTurn() === congklak.AI) {
     document.querySelector('.description').innerHTML = "It's enemy's turn";
     stateStream = congklak.aiPlay();
@@ -58,7 +80,7 @@ setInterval(() => {
     coloringTheChanges(state);
     prevState = state.slice();
   }
-}, 500);
+}, 150);
 
 },{"congklak":2}],2:[function(require,module,exports){
 "use strict";
@@ -106,8 +128,14 @@ function init(firstTurn = true) {
 
 const getState = exports.getState = () => houses.slice();
 
+const playerCanPlay = state => state.slice(0, 7).some(i => !!i);
+
+const aiCanPlay = state => state.slice(8, 15).some(i => !!i);
+
 const switchTurn = () => {
   turn = turn === PLAYER || turn === PLAYER_MOVING ? AI : PLAYER;
+  if (!playerCanPlay(houses)) turn = AI;
+  if (!aiCanPlay(houses)) turn = PLAYER;
 };
 
 function checkWinner(currentState) {
@@ -115,25 +143,27 @@ function checkWinner(currentState) {
   const allSeedsExceptPoint = allSeeds - currentState[PLAYER_POINT_INDEX] - currentState[ENEMY_POINT_INDEX];
   if (Math.abs(currentState[PLAYER_POINT_INDEX] - currentState[ENEMY_POINT_INDEX]) > allSeedsExceptPoint) {
     if (currentState[PLAYER_POINT_INDEX] > currentState[ENEMY_POINT_INDEX]) {
-      return PLAYER_WIN;
+      turn = PLAYER_WIN;
+    } else {
+      turn = AI_WIN;
     }
-    return AI_WIN;
   }
   if (allSeedsExceptPoint === 0 && currentState[PLAYER_POINT_INDEX] === currentState[ENEMY_POINT_INDEX]) {
-    return TIE;
+    turn = TIE;
   }
-  return -1;
 }
 
-function* move(state, grabHouse, realMove = false, swap = false) {
-  const currentState = state.slice();
+function* move(state, grabHouse, playerOne, realMove = false) {
+  const conditionalSwapState = s => playerOne ? s.slice() : swapState(s);
+  const conditionalGrabHouse = playerOne ? grabHouse : grabHouse - 8;
+  const currentState = conditionalSwapState(state);
   let oneRound = false;
 
-  let currentPos = grabHouse + 1;
-  let grabSeed = currentState[grabHouse];
-  currentState[grabHouse] = 0;
+  let currentPos = conditionalGrabHouse + 1;
+  let grabSeed = currentState[conditionalGrabHouse];
+  currentState[conditionalGrabHouse] = 0;
 
-  yield { state: currentState, seed: grabSeed };
+  yield { state: conditionalSwapState(currentState), seed: grabSeed };
 
   while (grabSeed > 0) {
     if (currentPos === ENEMY_POINT_INDEX) {
@@ -151,7 +181,7 @@ function* move(state, grabHouse, realMove = false, swap = false) {
     }
 
     currentPos = (currentPos + 1) % MAX_HOUSE;
-    yield { state: currentState, seed: grabSeed };
+    yield { state: conditionalSwapState(currentState), seed: grabSeed };
   }
 
   currentPos -= 1;
@@ -161,65 +191,109 @@ function* move(state, grabHouse, realMove = false, swap = false) {
     currentState[currentPos] = 0;
   }
 
-  if (realMove) {
-    checkWinner(currentState);
-    switchTurn();
-    houses = swap ? swapState(currentState) : currentState;
+  let playAgain = false;
+  if (currentPos === PLAYER_POINT_INDEX) {
+    playAgain = true;
   }
 
-  return { state: currentState, seed: grabSeed };
+  if (realMove) {
+    houses = conditionalSwapState(currentState);
+    switchTurn();
+    if (playAgain) switchTurn();
+    checkWinner(conditionalSwapState(currentState));
+  }
+
+  return { state: conditionalSwapState(currentState), seed: grabSeed, playAgain };
 }
 
-function moveUntilEnd(state, grabHouse) {
-  const stateStream = move(state, grabHouse);
+function moveUntilEnd(state, grabHouse, playerOne) {
+  const stateStream = move(state, grabHouse, playerOne);
 
   let result;
   for (let tmp = stateStream.next().value; tmp !== undefined; tmp = stateStream.next().value) {
     result = tmp;
   }
 
-  return result.state;
+  return result;
 }
 
-function bestMove(state, depth, diffBefore) {
+function MIN(state, depth, p) {
+  let holeIndex;
+  let playerPoint = -INF;
+  let enemyPoint = INF;
+  let diff = INF;
+
+  for (let i = PLAYER_POINT_INDEX + 1; i < ENEMY_POINT_INDEX; i += 1) {
+    if (state[i] === 0) continue;
+    if (holeIndex === undefined) holeIndex = i;
+    if (depth === 0 || !playerCanPlay(state)) {
+      const tmp = moveUntilEnd(state.slice(), i, false);
+      const newState = tmp.state;
+      if (newState[PLAYER_POINT_INDEX] - newState[ENEMY_POINT_INDEX] < diff) {
+        holeIndex = i;
+        playerPoint = newState[PLAYER_POINT_INDEX];
+        enemyPoint = newState[ENEMY_POINT_INDEX];
+      }
+    } else {
+      const nextAiMove = moveUntilEnd(state.slice(), i, false);
+      const nextState = nextAiMove.state;
+      const { playAgain } = nextAiMove;
+      const temp = playAgain ? MIN(nextState, depth - 1, p) : MAX(nextState, depth - 1, p);
+      if (temp.playerPoint - temp.enemyPoint < diff) {
+        holeIndex = i;
+        playerPoint = temp.playerPoint;
+        enemyPoint = temp.enemyPoint;
+      }
+    }
+    diff = playerPoint - enemyPoint;
+    if (diff <= p.a) return { holeIndex, playerPoint, enemyPoint };
+    p.b = Math.min(p.b, diff);
+  }
+
+  return { holeIndex, playerPoint, enemyPoint };
+}
+
+function MAX(state, depth, p) {
   let holeIndex;
   let playerPoint = -INF;
   let enemyPoint = INF;
   let diff = -INF;
 
-  for (let i = 0; i < PLAYER_POINT_INDEX; i += 1) {
-    if (depth === 0) {
-      const newState = moveUntilEnd(state, i);
+  for (let i = PLAYER_POINT_INDEX + 1; i < ENEMY_POINT_INDEX; i += 1) {
+    if (state[i] === 0) continue;
+    if (holeIndex === undefined) holeIndex = i;
+    if (depth === 0 || !aiCanPlay(state)) {
+      const tmp = moveUntilEnd(state.slice(), i, true);
+      const newState = tmp.state;
       if (newState[PLAYER_POINT_INDEX] - newState[ENEMY_POINT_INDEX] > diff) {
         holeIndex = i;
         playerPoint = newState[PLAYER_POINT_INDEX];
         enemyPoint = newState[ENEMY_POINT_INDEX];
       }
     } else {
-      const nextState = swapState(moveUntilEnd(state, i));
-      const temp = bestMove(nextState, depth - 1, diff);
-      if (temp.enemyPoint - temp.playerPoint > diff) {
+      const nextPlayerMove = moveUntilEnd(state.slice(), i, true);
+      const nextState = nextPlayerMove.state;
+      const { playAgain } = nextPlayerMove;
+      const temp = playAgain ? MAX(nextState, depth - 1, p) : MIN(nextState, depth - 1, p);
+      if (temp.playerPoint - temp.enemyPoint > diff) {
         holeIndex = i;
-        playerPoint = temp.enemyPoint;
-        enemyPoint = temp.playerPoint;
+        playerPoint = temp.playerPoint;
+        enemyPoint = temp.enemyPoint;
       }
     }
     diff = playerPoint - enemyPoint;
-    if (-diff < diffBefore) break;
+    if (diff >= p.b) return { holeIndex, playerPoint, enemyPoint };
+    p.a = Math.max(p.a, diff);
   }
 
   return { holeIndex, playerPoint, enemyPoint };
 }
 
-function* aiPlay() {
+function aiPlay() {
   turn = AI_MOVING;
 
-  const swappedState = swapState(houses);
-  const index = bestMove(swappedState, 3, -INF).holeIndex;
-  const stateStream = move(swappedState, index, true, true);
-  for (let tmp = stateStream.next().value; tmp !== undefined; tmp = stateStream.next().value) {
-    yield { state: swapState(tmp.state), seed: tmp.seed };
-  }
+  const index = MIN(houses.slice(), 3, { a: -INF, b: INF }).holeIndex;
+  return move(houses.slice(), index, false, true, true);
 }
 
 function play(index) {
@@ -233,7 +307,7 @@ function play(index) {
 
   turn = PLAYER_MOVING;
 
-  return move(houses, index, true, false);
+  return move(houses.slice(), index, true, true, false);
 }
 
 const getTurn = exports.getTurn = () => turn;

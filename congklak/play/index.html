@@ -1,111 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>PikaCerdas &rarr; Congklak</title>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>PikaCerdas &rarr; Congklak</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Monda&display=swap"
+    />
+    <!-- <link rel="stylesheet" href="https://cdn.imbagus.com/css/fa.v5.css"> -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@ignatiusmb/aqua@19.11.7/lib/core.css"
+    />
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="congklak.js"></script>
+  </head>
 
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda&display=swap">
-  <link rel="stylesheet" href="https://cdn.imbagus.com/css/fa.v5.css">
-  <link rel="stylesheet" href="https://unpkg.com/@ignatiusmb/aqua@19.11.7/lib/core.css">
-  <link rel="stylesheet" href="/style.css">
-  <link rel="stylesheet" href="style.css">
-  <script defer src="congklak.js"></script>
-</head>
+  <body>
+    <header>
+      <h1>congklak.js</h1>
+      <h2>by PikaCerdas</h2>
+    </header>
+    <section id="game">
+      <aside>
+        <h2 class="description">It's your turn</h2>
+        <div id="seed" class="ring">
+          <img src="/static/hand.svg" alt="Hand Icon" />
+          <span>0</span>
+        </div>
+      </aside>
 
-<body>
-  <header>
-    <h1>congklak.js</h1>
-    <h2>by PikaCerdas</h2>
-  </header>
-  <section id="game">
-    <aside>
-      <h2 class="description">It's your turn</h2>
-      <div id="seed" class="ring">
-        <img src="/static/hand.svg" alt="Hand Icon">
-        <span>0</span>
-      </div>
-    </aside>
+      <main>
+        <div class="ring home foe" id="outer-ring-15">
+          <span class="score" id="ring-15"></span>
+        </div>
 
-    <main>
-      <div class="ring home foe" id="outer-ring-15">
-        <span class="score" id="ring-15"></span>
-      </div>
+        <div class="play-area">
+          <div class="side foe">
+            <div class="ring" id="outer-ring-14">
+              <span class="seed" id="ring-14"></span>
+            </div>
+            <div class="ring" id="outer-ring-13">
+              <span class="seed" id="ring-13"></span>
+            </div>
+            <div class="ring" id="outer-ring-12">
+              <span class="seed" id="ring-12"></span>
+            </div>
+            <div class="ring" id="outer-ring-11">
+              <span class="seed" id="ring-11"></span>
+            </div>
+            <div class="ring" id="outer-ring-10">
+              <span class="seed" id="ring-10"></span>
+            </div>
+            <div class="ring" id="outer-ring-9">
+              <span class="seed" id="ring-9"></span>
+            </div>
+            <div class="ring" id="outer-ring-8">
+              <span class="seed" id="ring-8"></span>
+            </div>
+          </div>
 
-      <div class="play-area">
-        <div class="side foe">
-          <div class="ring" id="outer-ring-14">
-            <span class="seed" id="ring-14"></span>
-          </div>
-          <div class="ring" id="outer-ring-13">
-            <span class="seed" id="ring-13"></span>
-          </div>
-          <div class="ring" id="outer-ring-12">
-            <span class="seed" id="ring-12"></span>
-          </div>
-          <div class="ring" id="outer-ring-11">
-            <span class="seed" id="ring-11"></span>
-          </div>
-          <div class="ring" id="outer-ring-10">
-            <span class="seed" id="ring-10"></span>
-          </div>
-          <div class="ring" id="outer-ring-9">
-            <span class="seed" id="ring-9"></span>
-          </div>
-          <div class="ring" id="outer-ring-8">
-            <span class="seed" id="ring-8"></span>
+          <div class="side our">
+            <div class="ring" id="outer-ring-0">
+              <span class="seed" id="ring-0"></span>
+            </div>
+            <div class="ring" id="outer-ring-1">
+              <span class="seed" id="ring-1"></span>
+            </div>
+            <div class="ring" id="outer-ring-2">
+              <span class="seed" id="ring-2"></span>
+            </div>
+            <div class="ring" id="outer-ring-3">
+              <span class="seed" id="ring-3"></span>
+            </div>
+            <div class="ring" id="outer-ring-4">
+              <span class="seed" id="ring-4"></span>
+            </div>
+            <div class="ring" id="outer-ring-5">
+              <span class="seed" id="ring-5"></span>
+            </div>
+            <div class="ring" id="outer-ring-6">
+              <span class="seed" id="ring-6"></span>
+            </div>
           </div>
         </div>
 
-        <div class="side our">
-          <div class="ring" id="outer-ring-0">
-            <span class="seed" id="ring-0"></span>
-          </div>
-          <div class="ring" id="outer-ring-1">
-            <span class="seed" id="ring-1"></span>
-          </div>
-          <div class="ring" id="outer-ring-2">
-            <span class="seed" id="ring-2"></span>
-          </div>
-          <div class="ring" id="outer-ring-3">
-            <span class="seed" id="ring-3"></span>
-          </div>
-          <div class="ring" id="outer-ring-4">
-            <span class="seed" id="ring-4"></span>
-          </div>
-          <div class="ring" id="outer-ring-5">
-            <span class="seed" id="ring-5"></span>
-          </div>
-          <div class="ring" id="outer-ring-6">
-            <span class="seed" id="ring-6"></span>
-          </div>
+        <div class="ring home our" id="outer-ring-7">
+          <span class="score" id="ring-7"></span>
         </div>
+      </main>
+    </section>
+    <section id="end">
+      <h1 id="win">You win!</h1>
+      <h1 id="lose">You lose!</h1>
+      <h1 id="tie">It's a tie!</h1>
+      <div class="button-wrapper">
+        <a class="button-inner" href="/congklak">
+          <div class="button">
+            Play again
+          </div>
+        </a>
+        <a class="button-inner" href="../about">
+          <div class="button">
+            About us
+          </div>
+        </a>
       </div>
-
-      <div class="ring home our" id="outer-ring-7">
-        <span class="score" id="ring-7"></span>
-      </div>
-    </main>
-  </section>
-  <section id="end">
-    <h1 id="win">You win!</h1>
-    <h1 id="lose">You lose!</h1>
-    <h1 id="tie">It's a tie!</h1>
-    <div class="button-wrapper">
-      <a class="button-inner" href="/congklak">
-        <div class="button">
-          Play again
-        </div>
-      </a>
-      <a class="button-inner" href="../about">
-        <div class="button">
-          About us
-        </div>
-      </a>
-    </div>
-  </section>
-</body>
-
+    </section>
+  </body>
 </html>

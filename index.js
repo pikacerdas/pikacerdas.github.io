@@ -37,7 +37,29 @@ const coloringTheChanges = newState => {
 };
 
 const seedDiv = document.querySelector('#seed span');
+
+const gameOver = status => {
+  document.querySelector('#game').style.display = 'none';
+  document.querySelector('#end').style.display = 'initial';
+  document.querySelector('#' + status).style.display = 'initial';
+};
+
+const checkGameOver = () => {
+  if (congklak.getTurn() === congklak.AI_WIN) {
+    gameOver('lose');
+  }
+
+  if (congklak.getTurn() === congklak.PLAYER_WIN) {
+    gameOver('win');
+  }
+
+  if (congklak.getTurn() === congklak.TIE) {
+    gameOver('tie');
+  }
+};
+
 setInterval(() => {
+  checkGameOver();
   if (congklak.getTurn() === congklak.AI) {
     document.querySelector('.description').innerHTML = "It's enemy's turn";
     stateStream = congklak.aiPlay();
